@@ -25,6 +25,14 @@ def test_main(capsys):
     assert "The 7-th Fibonacci number is 13" in captured.out
 
 
+def test_main_with_verbose_flag(caplog):
+    """Test CLI with verbose flag"""
+
+    main(["--verbose", "5"])
+
+    assert any("Script ends here" in record.message for record in caplog.records)
+
+
 def test_main_with_very_verbose_flag(caplog):
     """Test CLI with verbose flag"""
 
