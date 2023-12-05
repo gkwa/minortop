@@ -41,3 +41,25 @@ def test_main_with_very_verbose_flag(caplog):
     assert any(
         "Starting crazy calculations..." in record.message for record in caplog.records
     )
+
+
+def test_main_with_empty_arg(capsys):
+    """Test CLI with empty argument"""
+
+    with pytest.raises(SystemExit) as e:
+        main([])
+
+    assert e.value.code == 2
+    captured = capsys.readouterr()
+    assert "the following arguments are required: INT" in captured.err
+
+
+def test_main_with_invalid_arg(capsys):
+    """Test CLI with invalid argument"""
+
+    with pytest.raises(SystemExit) as e:
+        main(["invalid"])
+
+    assert e.value.code == 2
+    captured = capsys.readouterr()
+    assert "pytest: error: argument INT: invalid int value: 'invalid'" in captured.err
