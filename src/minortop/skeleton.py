@@ -98,16 +98,24 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def setup_logging(loglevel):
+def setup_logging(loglevel, logger=None):
     """Setup basic logging
 
     Args:
       loglevel (int): minimum loglevel for emitting messages
+      logger (Optional[logging.Logger]): Logger instance, defaults to None.
     """
     logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    logging.basicConfig(
-        level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
-    )
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter(logformat, datefmt="%Y-%m-%d %H:%M:%S"))
+
+    if logger is None:
+        logger = logging.getLogger(__name__)
+
+    if loglevel is not None:  # Check if loglevel is specified
+        logger.setLevel(loglevel)
+
+    logger.addHandler(handler)
 
 
 def main(args):

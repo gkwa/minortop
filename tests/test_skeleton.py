@@ -23,3 +23,13 @@ def test_main(capsys):
     main(["7"])
     captured = capsys.readouterr()
     assert "The 7-th Fibonacci number is 13" in captured.out
+
+
+def test_main_with_very_verbose_flag(caplog):
+    """Test CLI with verbose flag"""
+
+    main(["--very-verbose", "5"])
+
+    assert any(
+        "Starting crazy calculations..." in record.message for record in caplog.records
+    )
