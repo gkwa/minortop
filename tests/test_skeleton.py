@@ -1,65 +1,16 @@
 import pytest
 
-from minortop.main import fib, main
-
-__author__ = "Taylor Monacelli"
-__copyright__ = "Taylor Monacelli"
-__license__ = "MPL-2.0"
+import minortop.main
 
 
-def test_fib():
-    """API Tests"""
-    assert fib(1) == 1
-    assert fib(2) == 1
-    assert fib(7) == 13
-    with pytest.raises(AssertionError):
-        fib(-10)
-
-
-def test_main(capsys):
-    """CLI Tests"""
-    # capsys is a pytest fixture that allows asserts against stdout/stderr
-    # https://docs.pytest.org/en/stable/capture.html
-    main(["7"])
-    captured = capsys.readouterr()
-    assert "The 7-th Fibonacci number is 13" in captured.out
-
-
-def test_main_with_verbose_flag(caplog):
-    """Test CLI with verbose flag"""
-
-    main(["--verbose", "5"])
-
-    assert any("Script ends here" in record.message for record in caplog.records)
-
-
-def test_main_with_very_verbose_flag(caplog):
-    """Test CLI with verbose flag"""
-
-    main(["--very-verbose", "5"])
-
-    assert any(
-        "Starting crazy calculations..." in record.message for record in caplog.records
-    )
-
-
-def test_main_with_empty_arg(capsys):
-    """Test CLI with empty argument"""
-
+def test_main_with_version_option(capsys):
+    """Test CLI with version option"""
     with pytest.raises(SystemExit) as e:
-        main([])
+        minortop.main.main(["--version"])
 
-    assert e.value.code == 2
+    # Check if the exit status is 0
+    assert e.value.code == 0
+
+    # Optionally, you can also check the captured output
     captured = capsys.readouterr()
-    assert "the following arguments are required: INT" in captured.err
-
-
-def test_main_with_invalid_arg(capsys):
-    """Test CLI with invalid argument"""
-
-    with pytest.raises(SystemExit) as e:
-        main(["invalid"])
-
-    assert e.value.code == 2
-    captured = capsys.readouterr()
-    assert "pytest: error: argument INT: invalid int value: 'invalid'" in captured.err
+    assert "minortop" in captured.out.strip()

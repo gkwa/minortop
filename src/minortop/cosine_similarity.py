@@ -15,7 +15,7 @@ def add_subparsers(parser):
     parser = subparsers.add_parser(
         "cosine-similarity",
         help="cosine-similarity help",
-        aliases=["cs"],
+        aliases=["cosine"],
     )
 
     parser.add_argument("--data-path", required=True, help="path to data.txt")

@@ -87,14 +87,14 @@ parser = argparse.ArgumentParser(
     description="Just a command, sub command, subsub command demonstration"
 )
 
-args_common.add_common_args(parser)
-cosine_similarity_module.add_subparsers(parser)
-
 parser.add_argument(
     "--version",
     action="version",
-    version=f"minortap {__version__}",
+    version=f"minortop {__version__}",
 )
+
+args_common.add_common_args(parser)
+cosine_similarity_module.add_subparsers(parser)
 
 
 def main(args):
@@ -113,7 +113,6 @@ def main(args):
     cosine_similarity = getattr(args, "cosine_similarity", None)
 
     if cosine_similarity:
-        data_path = getattr(args, "data_path", None)  # noqa: F841
         cosine_similarity_module.main(args)
 
     _logger.info("Script ends here")
