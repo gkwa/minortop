@@ -14,3 +14,19 @@ def test_main_with_version_option(capsys):
     # Optionally, you can also check the captured output
     captured = capsys.readouterr()
     assert "minortop" in captured.out.strip()
+
+
+def test_main_with_no_arguments(capsys, monkeypatch):
+    """Test CLI with no arguments (show help)"""
+    # Mock the setup_logging function to avoid unnecessary logs during testing
+    monkeypatch.setattr(minortop.main, "setup_logging", lambda x: None)
+
+    result = minortop.main.main([])
+    captured = capsys.readouterr()
+
+    # Check if the exit status is 1 (indicating an error)
+    assert (
+        "Just a command, sub command, subsub command demonstration"
+        in captured.out.strip()
+    )
+    assert result == 1
