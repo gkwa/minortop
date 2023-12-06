@@ -30,3 +30,27 @@ def test_main_with_no_arguments(capsys, monkeypatch):
         in captured.out.strip()
     )
     assert result == 1
+
+
+def test_main_with_invalid_argument(capsys, monkeypatch):
+    """Test CLI with no arguments (show help)"""
+    with pytest.raises(SystemExit) as e:
+        minortop.main.main(["garbage"])
+
+    assert e.value.code == 2
+
+    # Optionally, you can also check the captured output
+    captured = capsys.readouterr()
+    assert "invalid choice:" in captured.err.strip()
+
+
+def test_main_with_multiple_invalid_arguments(capsys, monkeypatch):
+    """Test CLI with no arguments (show help)"""
+    with pytest.raises(SystemExit) as e:
+        minortop.main.main(["garbage", "garbage"])
+
+    assert e.value.code == 2
+
+    # Optionally, you can also check the captured output
+    captured = capsys.readouterr()
+    assert "invalid choice:" in captured.err.strip()
