@@ -1,10 +1,27 @@
 # cosine_similarity
 
-import argparse
-
 import numpy
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+import sklearn.feature_extraction.text
+import sklearn.metrics.pairwise
+
+from . import args_common
+
+
+def add_subparsers(parser):
+    subparsers = parser.add_subparsers(
+        dest="cosine_similarity", help="Calculate cosine similarity between strings."
+    )
+
+    parser = subparsers.add_parser(
+        "cosine-similarity",
+        help="cosine-similarity help",
+        aliases=["cs"],
+    )
+
+    parser.add_argument("--data-path", required=True, help="path to data.txt")
+    args_common.add_common_args(parser)
+
+    return parser
 
 
 def read_items(file_path):
@@ -13,40 +30,40 @@ def read_items(file_path):
     return string_list
 
 
-parser = argparse.ArgumentParser(
-    description="Calculate cosine similarity between strings."
-)
-parser.add_argument("--file-path", required=True, help="Path to the input file")
+def main(args):
+    string_list = read_items(args.data_path)
 
-args = parser.parse_args()
+    # Convert the list of strings into a matrix of token counts
+    vectorizer = sklearn.feature_extraction.text.CountVectorizer().fit_transform(
+        string_list
+    )
 
-string_list = read_items(args.file_path)
+    # Calculate the cosine similarity between each pair of strings
+    cosine_similarities = sklearn.metrics.pairwise.cosine_similarity(vectorizer)
 
-# Convert the list of strings into a matrix of token counts
-vectorizer = CountVectorizer().fit_transform(string_list)
+    # Flatten the upper triangular part of the matrix (excluding the diagonal)
+    flat_cosine_similarities = cosine_similarities[
+        numpy.triu_indices(len(cosine_similarities), k=1)
+    ]
 
-# Calculate the cosine similarity between each pair of strings
-cosine_similarities = cosine_similarity(vectorizer)
+    # Get the indices of the top 5 and bottom 5 values
+    top_indices = numpy.argsort(flat_cosine_similarities)[-5:][::-1]
+    bottom_indices = numpy.argsort(flat_cosine_similarities)[:5]
 
-# Flatten the upper triangular part of the matrix (excluding the diagonal)
-flat_cosine_similarities = cosine_similarities[
-    numpy.triu_indices(len(cosine_similarities), k=1)
-]
+    # Output the top 5 items and scores
+    print("Top 5 items and scores:")
+    for index in top_indices:
+        item1, item2 = numpy.unravel_index(index, cosine_similarities.shape)
+        score = flat_cosine_similarities[index]
+        print(
+            f"Items: '{string_list[item1]}' and '{string_list[item2]}', Score = {score}"
+        )
 
-# Get the indices of the top 5 and bottom 5 values
-top_indices = numpy.argsort(flat_cosine_similarities)[-5:][::-1]
-bottom_indices = numpy.argsort(flat_cosine_similarities)[:5]
-
-# Output the top 5 items and scores
-print("Top 5 items and scores:")
-for index in top_indices:
-    item1, item2 = numpy.unravel_index(index, cosine_similarities.shape)
-    score = flat_cosine_similarities[index]
-    print(f"Items: '{string_list[item1]}' and '{string_list[item2]}', Score = {score}")
-
-# Output the bottom 5 items and scores
-print("\nBottom 5 items and scores:")
-for index in bottom_indices:
-    item1, item2 = numpy.unravel_index(index, cosine_similarities.shape)
-    score = flat_cosine_similarities[index]
-    print(f"Items: '{string_list[item1]}' and '{string_list[item2]}', Score = {score}")
+    # Output the bottom 5 items and scores
+    print("\nBottom 5 items and scores:")
+    for index in bottom_indices:
+        item1, item2 = numpy.unravel_index(index, cosine_similarities.shape)
+        score = flat_cosine_similarities[index]
+        print(
+            f"Items: '{string_list[item1]}' and '{string_list[item2]}', Score = {score}"
+        )

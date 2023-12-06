@@ -24,7 +24,8 @@ import argparse
 import logging
 import sys
 
-from minortop import __version__
+from minortop import __version__, args_common
+from minortop import cosine_similarity as cosine_similarity_module
 
 __author__ = "Taylor Monacelli"
 __copyright__ = "Taylor Monacelli"
@@ -62,42 +63,6 @@ def fib(n):
 # executable/script.
 
 
-def parse_args(args):
-    """Parse command line parameters
-
-    Args:
-      args (List[str]): command line parameters as list of strings
-          (for example  ``["--help"]``).
-
-    Returns:
-      :obj:`argparse.Namespace`: command line parameters namespace
-    """
-    parser = argparse.ArgumentParser(description="Just a Fibonacci demonstration")
-    parser.add_argument(
-        "--version",
-        action="version",
-        version=f"minortop {__version__}",
-    )
-    parser.add_argument(dest="n", help="n-th Fibonacci number", type=int, metavar="INT")
-    parser.add_argument(
-        "-v",
-        "--verbose",
-        dest="loglevel",
-        help="set loglevel to INFO",
-        action="store_const",
-        const=logging.INFO,
-    )
-    parser.add_argument(
-        "-vv",
-        "--very-verbose",
-        dest="loglevel",
-        help="set loglevel to DEBUG",
-        action="store_const",
-        const=logging.DEBUG,
-    )
-    return parser.parse_args(args)
-
-
 def setup_logging(loglevel, logger=None):
     """Setup basic logging
 
@@ -118,6 +83,20 @@ def setup_logging(loglevel, logger=None):
     logger.addHandler(handler)
 
 
+parser = argparse.ArgumentParser(
+    description="Just a command, sub command, subsub command demonstration"
+)
+
+args_common.add_common_args(parser)
+cosine_similarity_module.add_subparsers(parser)
+
+parser.add_argument(
+    "--version",
+    action="version",
+    version=f"minortap {__version__}",
+)
+
+
 def main(args):
     """Wrapper allowing :func:`fib` to be called with string arguments in a CLI fashion
 
@@ -128,10 +107,15 @@ def main(args):
       args (List[str]): command line parameters as list of strings
           (for example  ``["--verbose", "42"]``).
     """
-    args = parse_args(args)
+    args = parser.parse_args(args)
     setup_logging(args.loglevel)
     _logger.debug("Starting crazy calculations...")
-    print(f"The {args.n}-th Fibonacci number is {fib(args.n)}")
+    cosine_similarity = getattr(args, "cosine_similarity", None)
+
+    if cosine_similarity:
+        data_path = getattr(args, "data_path", None)  # noqa: F841
+        cosine_similarity_module.main(args)
+
     _logger.info("Script ends here")
 
 
