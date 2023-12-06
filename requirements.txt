@@ -1,0 +1,15 @@
+biopython
+fuzzywuzzy
+gensim
+jarowinkler
+jellyfish
+jinja2
+neo4j
+numpy
+openapi
+python-Levenshtein
+PyYAML
+requests
+requests-oauthlib
+scikit-learn
+spacy

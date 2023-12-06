@@ -1,0 +1,56 @@
+I'll give you a recipe and a url and you do the following steps:
+
+Create a neo4j cypher query that creates a recipe node that has a title and url. Here's an example:
+CREATE (yellowThaiCurry:Recipe { name: "Yellow Thai Curry", urls: ["https://www.youtube.com/watch?v=JaB3T4HpGE8"]})
+CREATE (thaiCurry1:Recipe { name: "The Best Green Curry", urls: ["https://www.joshuaweissman.com/post/easy-authentic-thai-green-curry", "https://photos.google.com/photo/AF1QipMJV_m1w-qezTjSZAmu6Vam_PKMR6GICW6TJ883"]})
+
+Also you should fetch the ingredients from the recipe and from each
+ingredient, take note of the quantitiy for the ingredient and save it
+for the relation below, but in the product remove the quantity
+
+Next, camelcase the product name and create cypher query to create
+node from product name. Here's an example:
+
+CREATE (thaiBasil:Product { name: "Thai basil" , urls: ["https://www.fredmeyer.com/p/simple-truth-organic-thai-basil/0001111001922"]}, type: "Thai Basil")
+CREATE (thaiChilies:Product { name: "Thai chilies", type: "Thai Chilies" })
+CREATE (thaiEggplant:Product { name: "Thai Eggplant", type: "Thai Eggplant" })
+
+For each product node you created, create an additional relation that
+indicates that this recipe contains these products.
+
+In the relation, add the quantity that you took note of earlier. Here's an example
+
+CREATE (thaiCurry1)-[:CONTAINS { quantity: "1 bunch" }]->(cilantro)
+CREATE (thaiCurry1)-[:CONTAINS { quantity: "3/4 cup" }]->(chickenStock)
+CREATE (thaiCurry1)-[:CONTAINS { quantity: "1 lb" }]->(chickenThigh)
+
+where here thaiCurry1 is the recipe and chickenStock is an ingredient.
+
+Also create an person node similar to this the following.  If you can discern
+the chef's url, then include it here, otherwise just list urls property with empty list:
+CREATE (pailinChongchitnant:Person { name: "Pailin Chongchitnant", urls: [""] })
+
+If you find the chef in the data that created this recipe, the create
+a relation that tells us who CREATED the recipe similar to this:
+CREATE (pailinChongchitnant)-[:CREATED]->(teriyakiRecipe)
+
+but do not copy pailinChongchitnant into your results if
+it turns out that you can't detect the chef from the text.
+Its not ok to attribute this recipe to pailinChongchitnant
+unless she actually created it.
+
+If you're about to create a cypher query like this where the urls list is empty:
+CREATE (palmSugar:Product { name: "Palm sugar", type: "Palm sugar", urls: [""] })
+
+then just leave out the urls list all together...so instead you should create the entry like this:
+CREATE (palmSugar:Product { name: "Palm sugar", type: "Palm sugar" })
+
+Always use double quotes to delimit fields instead of single quotes.
+
+Please don't add comments to the code and show all code in a single code block
+
+Put all your results and cypher code in a single code block.
+
+Ok here goes:
+
+the recipe urls are here:
