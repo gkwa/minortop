@@ -38,8 +38,8 @@ def main(similarity_threshold, file_path):
 
     # Print the pairs with similarity scores above the threshold
     print(
-        f"Pairs with similarity scores above {similarity_threshold}"
-        "(ordered by ascending score):"
+        "Pairs with similarity scores above"
+        f" {similarity_threshold} (ordered by ascending score):"
     )
     for i, j in selected_indices:
         similarity = cosine_similarities[i, j]
@@ -59,8 +59,8 @@ def main(similarity_threshold, file_path):
     count_of_selected_pairs = len(selected_indices)
     print(f"\nTotal number of pairs: {total_count:,}")
     print(
-        "Number of pairs with similarity scores above "
-        f"{similarity_threshold}: {count_of_selected_pairs:,}"
+        "Number of pairs with similarity scores above"
+        f" {similarity_threshold}: {count_of_selected_pairs:,}"
     )
 
 
@@ -78,8 +78,8 @@ if __name__ == "__main__":
         "--file-path",
         type=str,
         default="data.txt",
-        help="Path to the newline-delimited file"
-        " containing strings (default: data.txt)",
+        help="Path to the newline-delimited file "
+        "containing strings (default: data.txt)",
     )
 
     args = parser.parse_args()
