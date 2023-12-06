@@ -1,6 +1,6 @@
 import pytest
 
-from minortop.skeleton import fib, main
+from minortop.main import fib, main
 
 __author__ = "Taylor Monacelli"
 __copyright__ = "Taylor Monacelli"
